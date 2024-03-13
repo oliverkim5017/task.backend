@@ -1,6 +1,7 @@
-package org.me.community.config;
+package org.task.backend.config;
 
-import org.me.community.model.entity.LoginUser;
+
+import org.task.backend.model.entity.LoginUser;
 
 /**
  * @author OliverKim

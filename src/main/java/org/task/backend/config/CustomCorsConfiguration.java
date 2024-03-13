@@ -1,4 +1,4 @@
-package org.me.community.config;
+package org.task.backend.config;
 
 
 import org.springframework.beans.factory.annotation.Value;

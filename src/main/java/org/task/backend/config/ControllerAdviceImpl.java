@@ -1,16 +1,13 @@
-package org.me.community.config;
+package org.task.backend.config;
 
 import com.alibaba.druid.pool.GetConnectionTimeoutException;
 import lombok.extern.slf4j.Slf4j;
-import org.me.community.exception.DaoException;
-import org.me.community.model.vo.result.Result;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Arrays;
-import java.util.List;
+import org.task.backend.exception.DaoException;
+import org.task.backend.model.vo.result.Result;
 
 /**
  * @author OliverKim
