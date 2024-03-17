@@ -15,7 +15,6 @@ public class Team {
 
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
-	@TableField("name")
 	private String name;
 
 }

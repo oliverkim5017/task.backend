@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 8080
 
 mybatis-plus:
   configuration:
@@ -21,3 +21,8 @@ spring:
         keep-alive: 60000
 
 corsOrigin: '*'
+
+logging:
+  level:
+    org.springdoc: debug
+    org.springframework.web: debug

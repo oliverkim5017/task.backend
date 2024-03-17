@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,19 +18,20 @@ public class Task {
 
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
-	@TableField("content")
 	private String content;
-	@TableField("teamId")
 	private Integer teamId;
 	@TableField(exist = false)
 	private Team team;
-	@TableField("stateId")
 	private Integer stateId;
 	@TableField(exist = false)
 	private TaskState state;
-	@TableField("creatorId")
+	private Integer creatorId;
+	@TableField(exist = false)
 	private User creator;
 	@TableField(exist = false)
 	private List<TaskNode> nodes;
 
+	public Task() {
+		this.nodes = new ArrayList<>();
+	}
 }

@@ -5,6 +5,9 @@ import org.task.backend.model.dto.LoginDto;
 import org.task.backend.model.dto.RegisterDto;
 import org.task.backend.model.entity.User;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 /**
  * @author OliverKim
  * @description
@@ -14,5 +17,7 @@ public interface UserService extends IService<User> {
 	String login(LoginDto loginDto);
 
 	String register(RegisterDto registerDto);
+
+	String getRole(String token);
 
 }

@@ -1,5 +1,7 @@
 package org.task.backend.model.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 /**
@@ -10,9 +12,13 @@ import lombok.Data;
 @Data
 public class RegisterDto {
 
+	@NotBlank(message = "请输入用户名")
 	private String username;
+	@NotBlank(message = "请输入密码")
 	private String password;
+	@NotBlank(message = "请输入姓名")
 	private String name;
-	private int departmentId;
+	@Positive(message = "请选择组别")
+	private int teamId;
 
 }

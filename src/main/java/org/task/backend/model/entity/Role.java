@@ -15,9 +15,7 @@ public class Role {
 
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
-	@TableField("name")
 	private String name;
-	@TableField("defaultRole")
 	private boolean defaultRole;
 
 }

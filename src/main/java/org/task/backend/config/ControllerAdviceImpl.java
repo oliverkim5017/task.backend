@@ -1,6 +1,7 @@
 package org.task.backend.config;
 
 import com.alibaba.druid.pool.GetConnectionTimeoutException;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -18,7 +19,12 @@ import org.task.backend.model.vo.result.Result;
 @Slf4j
 public class ControllerAdviceImpl {
 
-
+	@ExceptionHandler(ExpiredJwtException.class)
+	public Result handleExpiredJwtException(ExpiredJwtException e){
+		log.error(e.getMessage());
+		e.printStackTrace();
+		return Result.error("登录信息已过期");
+	}
 
 	@ExceptionHandler(GetConnectionTimeoutException.class)
 	public Result handleGetConnectionTimeoutException(GetConnectionTimeoutException e){

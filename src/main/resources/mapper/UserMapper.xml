@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.task.backend.mapper.UserMapper">
-
-
+    
+    <resultMap id="UserMap" type="org.task.backend.model.entity.User">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="name" column="name"/>
+        <result property="teamId" column="teamId" jdbcType="INTEGER"/>
+        <result property="roleId" column="roleId"/>
+        <association property="team" resultMap="org.task.backend.mapper.TeamMapper.TeamMap"/>
+        <association property="role" resultMap="org.task.backend.mapper.RoleMapper.RoleMapper"/>
+    </resultMap>
 
 </mapper>

@@ -2,6 +2,7 @@ package org.task.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,11 +34,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 	public String login(LoginDto loginDto) {
 		User user = userMapper.selectOne(new QueryWrapper<User>().lambda()
 				.eq(User::getUsername, loginDto.getUsername()));
+		if (user == null) {
+			throw new RuntimeException("用户不存在");
+		}
 		String hashedPassword = SHA256Util.hashPassword(loginDto.getPassword());
 		if (!user.getPassword().equals(hashedPassword)) {
 			throw new RuntimeException("用户名或密码错误");
 		}
-		return JwtUtil.generateToken(user.getUsername(), user.getName(), user.getDepartmentId().toString(), user.getRoleId().toString());
+		return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getName(), user.getTeamId(), user.getRoleId());
 	}
 
 	@Override
@@ -53,7 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		user.setUsername(registerDto.getUsername());
 		user.setPassword(hashedPassword);
 		user.setName(registerDto.getName());
-		user.setDepartmentId(registerDto.getDepartmentId());
+		user.setTeamId(registerDto.getTeamId());
 		Role role = roleService.getOne(new QueryWrapper<Role>().lambda()
 				.eq(Role::isDefaultRole, true));
 		user.setRoleId(role.getId());
@@ -61,6 +65,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		if (affectedRow == 0) {
 			throw new RuntimeException("注册失败");
 		}
-		return JwtUtil.generateToken(user.getUsername(), user.getName(), user.getDepartmentId().toString(), user.getRoleId().toString());
+		return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getName(), user.getTeamId(), user.getRoleId());
+	}
+
+
+	@Override
+	public String getRole(String token) {
+		Claims claims = JwtUtil.getClaimsFromToken(token);
+		Integer roleId = claims.get("roleId", Integer.class);
+		Role role = roleService.getById(roleId);
+		return role.getName();
 	}
 }

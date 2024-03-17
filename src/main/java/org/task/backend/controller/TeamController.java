@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.task.backend.annotation.Permission;
 import org.task.backend.model.dto.TeamDto;
 import org.task.backend.model.entity.Team;
 import org.task.backend.model.entity.User;
@@ -31,6 +32,7 @@ public class TeamController {
 		return Result.success(teamService.list());
 	}
 
+	@Permission("管理员")
 	@PostMapping("/addTeam")
 	public Result addTeam(@RequestBody @Validated TeamDto teamDto) {
 		Team team = new Team();
@@ -39,6 +41,7 @@ public class TeamController {
 		return saved? Result.success(team): Result.saveFailed();
 	}
 
+	@Permission({"管理员","组长"})
 	@PutMapping("/updateTeam/{id}")
 	public Result updateTeam(@RequestBody @Validated TeamDto teamDto, @PathVariable int id) {
 		Team team = new Team();
@@ -48,6 +51,7 @@ public class TeamController {
 		return updated? Result.success(team): Result.updateFailed();
 	}
 
+	@Permission("管理员")
 	@DeleteMapping("/delTeam/{id}")
 	public Result delTeam(@PathVariable int id) {
 		List<User> users = userService.list(new QueryWrapper<User>().lambda()

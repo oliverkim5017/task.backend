@@ -1,7 +1,12 @@
 package org.task.backend.config;
 
 
+import io.jsonwebtoken.Claims;
+import org.task.backend.exception.UnauthorizedException;
 import org.task.backend.model.entity.LoginUser;
+import org.task.backend.util.JwtUtil;
+
+import java.util.Optional;
 
 /**
  * @author OliverKim
@@ -22,6 +27,14 @@ public class LoginThreadLocal {
 
 	public static void destroy(){
 		threadLocal.remove();
+	}
+
+	public static Integer getUserId() {
+		LoginUser loginUser = threadLocal.get();
+		String token = loginUser.getToken();
+		Optional.ofNullable(token).orElseThrow(UnauthorizedException::new);
+		Claims claims = JwtUtil.getClaimsFromToken(token);
+		return claims.get("userId", Integer.class);
 	}
 
 }
