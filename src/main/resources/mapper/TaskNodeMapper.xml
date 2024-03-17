@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.task.backend.mapper.TaskNodeMapper">
+
+    <resultMap id="TaskNodeMap" type="org.task.backend.model.entity.TaskNode">
+            <id property="id" column="taskNodeId" jdbcType="INTEGER"/>
+            <result property="parentTaskId" column="parentTaskId" jdbcType="INTEGER"/>
+            <result property="content" column="nodeContent" jdbcType="VARCHAR"/>
+            <result property="userId" column="nodeUserId" jdbcType="INTEGER"/>
+            <result property="stateId" column="nodeStateId" jdbcType="INTEGER"/>
+            <result property="creatorId" column="nodeCreatorId" jdbcType="INTEGER"/>
+            <result property="nodeIndex" column="nodeIndex" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+
+
+</mapper>
