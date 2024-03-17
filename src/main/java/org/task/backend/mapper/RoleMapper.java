@@ -1,4 +1,4 @@
-package org.task.backend.dao;
+package org.task.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.task.backend.model.entity.Role;

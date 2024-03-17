@@ -11,25 +11,11 @@ import lombok.Data;
  * @since 2024-03-13
  */
 @Data
-public class User {
+public class Team {
 
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
-	@TableField("username")
-	private String username;
-	@TableField("password")
-	private String password;
 	@TableField("name")
 	private String name;
-	@TableField("departmentId")
-	private Integer departmentId;
-	@TableField("teamId")
-	private Integer teamId;
-	@TableField(exist = false)
-	private Team team;
-	@TableField("roleId")
-	private Integer roleId;
-	@TableField(exist = false)
-	private Role role;
 
 }

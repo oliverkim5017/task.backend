@@ -2,9 +2,9 @@ package org.task.backend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import org.task.backend.mapper.RoleMapper;
-import org.task.backend.model.entity.Role;
-import org.task.backend.service.RoleService;
+import org.task.backend.mapper.TeamMapper;
+import org.task.backend.model.entity.Team;
+import org.task.backend.service.TeamService;
 
 /**
  * @author OliverKim
@@ -12,5 +12,6 @@ import org.task.backend.service.RoleService;
  * @since 2024-03-13
  */
 @Service
-public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
+public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team> implements TeamService {
+
 }

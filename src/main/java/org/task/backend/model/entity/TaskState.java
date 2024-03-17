@@ -8,10 +8,10 @@ import lombok.Data;
 /**
  * @author OliverKim
  * @description
- * @since 2024-03-13
+ * @since 2024-03-16
  */
 @Data
-public class Department {
+public class TaskState {
 
 	@TableId(value = "id", type = IdType.AUTO)
 	private Integer id;
