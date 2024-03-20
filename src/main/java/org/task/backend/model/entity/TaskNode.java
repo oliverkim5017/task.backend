@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -34,5 +35,6 @@ public class TaskNode implements Serializable {
 	private Integer creatorId;
 	@TableField(exist = false)
 	private User creator;
+	private LocalDate deadLine;
 
 }

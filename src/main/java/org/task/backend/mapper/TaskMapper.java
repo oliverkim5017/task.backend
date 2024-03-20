@@ -14,6 +14,6 @@ import java.util.List;
 public interface TaskMapper extends BaseMapper<Task> {
 	Task getTaskById(Integer id);
 
-	List<Task> getTasks(Integer teamId, Integer stateId, LocalDate startTime, LocalDate endTime);
+	List<Task> getTasks(List<Integer>  teamIds, List<Integer>  stateIds, LocalDate startTime, LocalDate endTime);
 
 }

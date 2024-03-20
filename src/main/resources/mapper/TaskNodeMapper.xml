@@ -5,16 +5,15 @@
 <mapper namespace="org.task.backend.mapper.TaskNodeMapper">
 
     <resultMap id="TaskNodeMap" type="org.task.backend.model.entity.TaskNode">
-            <id property="id" column="taskNodeId" jdbcType="INTEGER"/>
-            <result property="parentTaskId" column="parentTaskId" jdbcType="INTEGER"/>
-            <result property="content" column="nodeContent" jdbcType="VARCHAR"/>
-            <result property="userId" column="nodeUserId" jdbcType="INTEGER"/>
-            <result property="stateId" column="nodeStateId" jdbcType="INTEGER"/>
-            <result property="creatorId" column="nodeCreatorId" jdbcType="INTEGER"/>
-            <result property="nodeIndex" column="nodeIndex" jdbcType="INTEGER"/>
+        <id property="id" column="taskNodeId" jdbcType="INTEGER"/>
+        <result property="parentTaskId" column="parentTaskId" jdbcType="INTEGER"/>
+        <result property="content" column="nodeContent" jdbcType="VARCHAR"/>
+        <result property="userId" column="nodeUserId" jdbcType="INTEGER"/>
+        <result property="stateId" column="nodeStateId" jdbcType="INTEGER"/>
+        <result property="creatorId" column="nodeCreatorId" jdbcType="INTEGER"/>
+        <result property="nodeIndex" column="nodeIndex" jdbcType="INTEGER"/>
+        <result property="deadLine" column="deadLine"/>
     </resultMap>
-
-
 
 
 </mapper>

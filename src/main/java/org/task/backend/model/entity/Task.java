@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class Task {
 	@TableField(exist = false)
 	private User creator;
 	@TableField(exist = false)
+	private LocalDate deadLine;
 	private List<TaskNode> nodes;
 
 	public Task() {

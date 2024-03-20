@@ -14,14 +14,18 @@ import org.task.backend.model.dto.TaskDto;
 import org.task.backend.model.entity.LoginUser;
 import org.task.backend.model.entity.Task;
 import org.task.backend.model.entity.TaskNode;
+import org.task.backend.model.entity.TaskState;
 import org.task.backend.model.vo.result.Result;
 import org.task.backend.service.TaskNodeService;
 import org.task.backend.service.TaskService;
+import org.task.backend.service.TaskStateService;
 import org.task.backend.util.DateRangeParser;
 import org.task.backend.util.JwtUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +41,8 @@ public class TaskController {
 	private TaskService taskService;
 	@Resource
 	private TaskNodeService taskNodeService;
+	@Resource
+	private TaskStateService taskStateService;
 
 
 	@GetMapping("/getTaskById/{id}")
@@ -46,16 +52,30 @@ public class TaskController {
 	}
 
 	@GetMapping("/getTasks")
-	public Result getTasks(@RequestParam(required = false) Integer teamId, @RequestParam(required = false) Integer stateId, @RequestParam(required = false) String dateRange) {
+	public Result getTasks(@RequestParam(required = false) String teamIds, @RequestParam(required = false) String stateIds, @RequestParam(required = false) String dateRange) {
 		LocalDate startTime = null;
 		LocalDate endTime = null;
+		List<Integer> teamIdList = new ArrayList<>();
+		List<Integer> stateIdList = new ArrayList<>();
 		if (dateRange != null && !dateRange.isBlank()) {
 			LocalDateTime[] localDateTimes = DateRangeParser.parseDateRange(dateRange);
 			startTime = localDateTimes[0].toLocalDate();
 			endTime = localDateTimes[1].toLocalDate();
 		}
-		List<Task> tasks = taskService.getTasks(teamId, stateId, startTime, endTime);
+		if (teamIds != null) {
+			teamIdList = Arrays.stream(teamIds.split(",")).map(Integer::parseInt).toList();
+		}
+		if (stateIds != null) {
+			stateIdList = Arrays.stream(stateIds.split(",")).map(Integer::parseInt).toList();
+		}
+		List<Task> tasks = taskService.getTasks(teamIdList, stateIdList, startTime, endTime);
 		return Result.success(tasks);
+	}
+
+	@GetMapping("/getStates")
+	public Result getStates() {
+		List<TaskState> states = taskStateService.list();
+		return Result.success(states);
 	}
 
 

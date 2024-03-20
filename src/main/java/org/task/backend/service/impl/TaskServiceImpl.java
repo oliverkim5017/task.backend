@@ -44,8 +44,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 	}
 
 	@Override
-	public List<Task> getTasks(Integer teamId, Integer stateId, LocalDate startTime, LocalDate endTime) {
-		List<Task> tasks = taskMapper.getTasks(teamId, stateId, startTime, endTime);
+	public List<Task> getTasks(List<Integer>  teamIds, List<Integer>  stateIds, LocalDate startTime, LocalDate endTime) {
+		List<Task> tasks = taskMapper.getTasks(teamIds, stateIds, startTime, endTime);
 		Map<Integer, User> userMap = userService.list().stream().collect(Collectors.toMap(User::getId, user -> user));
 		Map<Integer, TaskState> stateMap = taskStateService.list().stream().collect(Collectors.toMap(TaskState::getId, taskState -> taskState));
 		for (Task task : tasks) {
