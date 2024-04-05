@@ -13,4 +13,22 @@
         <association property="role" resultMap="org.task.backend.mapper.RoleMapper.RoleMapper"/>
     </resultMap>
 
+    <select id="getById" resultType="org.task.backend.model.entity.User">
+        SELECT
+            user.id,
+            user.username,
+            user.password,
+            user.name,
+            user.team_id as teamId,
+            user.role_id as roleId,
+            team.id as team_id,
+            team.name as team_name,
+            role.id as role_id,
+            role.name as role_name
+        FROM user
+                 left join team on user.team_id = team.id
+                 left join role on user.role_id = role.id
+        WHERE user.id = #{id}
+    </select>
+
 </mapper>

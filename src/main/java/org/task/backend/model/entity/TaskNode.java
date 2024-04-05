@@ -10,12 +10,15 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.task.backend.model.dto.NodeDto;
 
 /**
  * @TableName task_node
  */
 @TableName(value = "task_node")
 @Data
+@NoArgsConstructor
 public class TaskNode implements Serializable {
 
 	@Serial
@@ -37,4 +40,12 @@ public class TaskNode implements Serializable {
 	private User creator;
 	private LocalDate deadLine;
 
+	public TaskNode(NodeDto nodeDto) {
+		this.id = nodeDto.getId();
+		this.parentTaskId = nodeDto.getParentTaskId();
+		this.content = nodeDto.getContent();
+		this.userId = nodeDto.getUserId();
+		this.stateId = nodeDto.getStateId();
+		this.deadLine = nodeDto.getDeadLine();
+	}
 }

@@ -9,4 +9,8 @@ import org.task.backend.model.entity.User;
  * @since 2024-03-13
  */
 public interface UserMapper extends BaseMapper<User> {
+
+	User getMe(Integer id);
+
+	User getById(Integer id);
 }

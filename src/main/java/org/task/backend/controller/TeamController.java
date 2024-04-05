@@ -29,7 +29,7 @@ public class TeamController {
 
 	@GetMapping("/getTeams")
 	public Result getTeams() {
-		return Result.success(teamService.list());
+		return Result.success(teamService.list().stream().sorted((a, b) -> (a.getId() - b.getId())).toArray());
 	}
 
 	@Permission("管理员")

@@ -1,15 +1,25 @@
 package org.task.backend.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.task.backend.annotation.Permission;
+import org.task.backend.config.LoginThreadLocal;
 import org.task.backend.model.dto.LoginDto;
 import org.task.backend.model.dto.RegisterDto;
+import org.task.backend.model.dto.UserSelectDto;
+import org.task.backend.model.entity.LoginUser;
 import org.task.backend.model.entity.User;
 import org.task.backend.model.vo.result.Result;
+import org.task.backend.service.RoleService;
+import org.task.backend.service.TeamService;
 import org.task.backend.service.UserService;
+import org.task.backend.util.JwtUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author OliverKim
@@ -21,6 +31,22 @@ public class UserController {
 
 	@Resource
 	private UserService userService;
+	@Resource
+	private RoleService roleService;
+	@Resource
+	private TeamService teamService;
+
+	@GetMapping("/myInfo")
+	public Result myInfo() {
+		LoginUser loginUser = LoginThreadLocal.get();
+		String token = loginUser.getToken();
+		Claims claims = JwtUtil.getClaimsFromToken(token);
+		int userId = (int) claims.get("userId");
+		User user = userService.getUserById(userId);
+		roleService.getOptById(user.getRoleId()).ifPresent(user::setRole);
+		teamService.getOptById(user.getTeamId()).ifPresent(user::setTeam);
+		return Result.success(user);
+	}
 
 	@PostMapping("/login")
 	public Result login(@RequestBody @Validated LoginDto loginDto) {
@@ -51,6 +77,20 @@ public class UserController {
 	public Result delUser(@PathVariable int id) {
 		boolean removed = userService.removeById(id);
 		return removed? Result.success("success") : Result.deleteFailed();
+	}
+
+	@GetMapping("/getUsers")
+	public Result getUsers() {
+		List<User> users = userService.list();
+		ArrayList<UserSelectDto> userSelectDtos = new ArrayList<>();
+		users.forEach(user -> {
+			UserSelectDto userSelectDto = new UserSelectDto();
+			userSelectDto.setId(user.getId());
+			userSelectDto.setName(user.getName());
+			userSelectDto.setTeamId(user.getTeamId());
+			userSelectDtos.add(userSelectDto);
+		});
+		return Result.success(userSelectDtos);
 	}
 
 }

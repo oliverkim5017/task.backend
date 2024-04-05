@@ -1,10 +1,13 @@
 package org.task.backend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import jakarta.annotation.Resource;
 import org.task.backend.model.entity.TaskNode;
 import org.task.backend.service.TaskNodeService;
 import org.task.backend.mapper.TaskNodeMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * @author 18200
@@ -15,6 +18,13 @@ import org.springframework.stereotype.Service;
 public class TaskNodeServiceImpl extends ServiceImpl<TaskNodeMapper, TaskNode>
     implements TaskNodeService{
 
+	@Resource
+	private TaskNodeMapper taskNodeMapper;
+
+	@Override
+	public List<TaskNode> getTaskNodes(Integer userId) {
+		return taskNodeMapper.getTaskNodes(userId);
+	}
 }
 
 

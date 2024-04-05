@@ -3,6 +3,8 @@ package org.task.backend.mapper;
 import org.task.backend.model.entity.TaskNode;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
 * @author 18200
 * @description 针对表【task_node】的数据库操作Mapper
@@ -10,6 +12,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity org.task.backend.model.entity.TaskNode
 */
 public interface TaskNodeMapper extends BaseMapper<TaskNode> {
+
+	List<TaskNode> getTaskNodes(Integer userId);
 
 }
 

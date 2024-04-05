@@ -62,10 +62,10 @@ public class TaskController {
 			startTime = localDateTimes[0].toLocalDate();
 			endTime = localDateTimes[1].toLocalDate();
 		}
-		if (teamIds != null) {
+		if (teamIds != null && !teamIds.isBlank()) {
 			teamIdList = Arrays.stream(teamIds.split(",")).map(Integer::parseInt).toList();
 		}
-		if (stateIds != null) {
+		if (stateIds != null && !stateIds.isBlank()) {
 			stateIdList = Arrays.stream(stateIds.split(",")).map(Integer::parseInt).toList();
 		}
 		List<Task> tasks = taskService.getTasks(teamIdList, stateIdList, startTime, endTime);
@@ -87,11 +87,12 @@ public class TaskController {
 		Claims claims = JwtUtil.getClaimsFromToken(token);
 		Integer userId = claims.get("userId", Integer.class);
 		Optional.ofNullable(userId).orElseThrow(UnauthorizedException::new);
-		Task task = new Task();
+		Task task = new Task(taskDto);
 		task.setCreatorId(userId);
 		task.setContent(taskDto.getContent());
 		task.setTeamId(taskDto.getTeamId());
 		task.setStateId(taskDto.getStateId());
+		task.setDeadLine(taskDto.getDeadLine());
 		boolean saved = taskService.save(task);
 		return saved ? Result.success(taskService.getTaskById(task.getId())) : Result.saveFailed();
 	}
@@ -102,13 +103,14 @@ public class TaskController {
 	public Result addNode(@RequestBody @Validated NodeDto nodeDto) {
 
 		long count = taskNodeService.count(new QueryWrapper<TaskNode>().lambda()
-				.eq(TaskNode::getParentTaskId, nodeDto.getParentNodeId()));
+				.eq(TaskNode::getParentTaskId, nodeDto.getParentTaskId()));
 		TaskNode taskNode = new TaskNode();
-		taskNode.setParentTaskId(nodeDto.getParentNodeId());
+		taskNode.setParentTaskId(nodeDto.getParentTaskId());
 		taskNode.setContent(nodeDto.getContent());
 		taskNode.setUserId(nodeDto.getUserId());
 		taskNode.setStateId(nodeDto.getStateId());
 		taskNode.setNodeIndex((int) count);
+		taskNode.setDeadLine(nodeDto.getDeadLine());
 		Integer userId = LoginThreadLocal.getUserId();
 		Optional.ofNullable(userId).orElseThrow(UnauthorizedException::new);
 		taskNode.setCreatorId(userId);
@@ -116,5 +118,50 @@ public class TaskController {
 		return saved ? Result.success() : Result.saveFailed();
 	}
 
+
+	@Permission({"管理员", "组长"})
+	@DeleteMapping("/delTaskNode/{id}")
+	public Result delTaskNode(@PathVariable int id) {
+		boolean removed = taskNodeService.removeById(id);
+		return removed ? Result.success() : Result.deleteFailed();
+	}
+
+	@Permission({"管理员", "组长"})
+	@PutMapping("/updateTask")
+	public Result updateTask(@RequestBody TaskDto taskDto) {
+		Task task = new Task(taskDto);
+		boolean updated = taskService.updateById(task);
+		if (updated) {
+			return Result.success(taskService.getTaskById(task.getId()));
+		} else {
+			return Result.updateFailed();
+		}
+	}
+
+	@Permission({"管理员", "组长"})
+	@DeleteMapping("/delTask/{id}")
+	public Result delTask(@PathVariable int id) {
+		boolean removed = taskService.removeTaskById(id);
+		return removed ? Result.success() : Result.deleteFailed();
+	}
+
+	@Permission({"管理员", "组长"})
+	@PutMapping("/updateNode")
+	public Result updateNode(@RequestBody NodeDto nodeDto) {
+		TaskNode taskNode = new TaskNode(nodeDto);
+		taskNodeService.updateById(taskNode);
+		return Result.success();
+	}
+
+	@GetMapping("/getMyTasks")
+	public Result getMyTasks() {
+		LoginUser loginUser = LoginThreadLocal.get();
+		String token = loginUser.getToken();
+		Claims claims = JwtUtil.getClaimsFromToken(token);
+		Integer userId = claims.get("userId", Integer.class);
+		Optional.ofNullable(userId).orElseThrow(UnauthorizedException::new);
+		List<TaskNode> taskNodes =  taskNodeService.getTaskNodes(userId);
+		return Result.success(taskNodes);
+	}
 
 }

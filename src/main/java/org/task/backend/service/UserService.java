@@ -20,4 +20,5 @@ public interface UserService extends IService<User> {
 
 	String getRole(String token);
 
+	User getUserById(Integer id);
 }

@@ -76,4 +76,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		Role role = roleService.getById(roleId);
 		return role.getName();
 	}
+
+	@Override
+	public User getUserById(Integer id) {
+		return userMapper.getById(id);
+	}
 }

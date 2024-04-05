@@ -22,6 +22,7 @@
                t.team_id         as teamId,
                t.state_id        as stateId,
                t.creator_id      as creatorId,
+               t.dead_line       as deadLine,
                team.name         as teamName,
                tn.id             as taskNodeId,
                tn.parent_task_id as parentTaskId,
@@ -30,7 +31,7 @@
                tn.state_id       as nodeStateId,
                tn.node_index     as nodeIndex,
                tn.creator_id     as nodeCreatorId,
-               tn.dead_line as nodeDeadLine
+               tn.dead_line      as nodeDeadLine
         FROM task t
                  LEFT JOIN team ON t.team_id = team.id
                  LEFT JOIN task_state ts ON t.state_id = ts.id
@@ -54,7 +55,8 @@
         tn.user_id as nodeUserId,
         tn.state_id as nodeStateId,
         tn.node_index as nodeIndex,
-        tn.creator_id as nodeCreatorId
+        tn.creator_id as nodeCreatorId,
+        tn.dead_line as nodeDeadLine
         FROM task t
         LEFT JOIN team ON t.team_id = team.id
         LEFT JOIN task_state ts ON t.state_id = ts.id
