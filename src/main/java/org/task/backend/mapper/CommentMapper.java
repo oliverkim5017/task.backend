@@ -14,6 +14,9 @@ import java.util.List;
 public interface CommentMapper extends BaseMapper<Comment> {
 
 
+	List<Comment> getComments(Integer taskId);
+
+	List<Comment> getMyComments(Integer userId);
 
 }
 

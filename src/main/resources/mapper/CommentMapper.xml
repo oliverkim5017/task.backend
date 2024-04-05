@@ -4,4 +4,61 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.task.backend.mapper.CommentMapper">
 
+    <resultMap id="comments" type="org.task.backend.model.entity.Comment">
+        <id property="id" column="id" />
+        <result property="taskId" column="taskId" />
+        <result property="userId" column="userId"/>
+        <result property="username" column="username"/>
+        <result property="toUserId" column="toUserName"/>
+        <result property="toUserName" column="toUserName"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created" />
+        <result property="taskContent" column="taskContent" />
+    </resultMap>
+
+
+
+    <select id="getComments" resultType="org.task.backend.model.entity.Comment">
+        SELECT c.id,
+               u1.id     as userId,
+               u1.`name` as userName,
+               u2.id     as toUserId,
+               u2.`name` as toUsername,
+               c.content,
+               c.task_id as taskId,
+               c.created_at
+        FROM `comment` AS c
+                 INNER JOIN
+             `user` AS u1
+             ON
+                 c.user_id = u1.id
+                 left JOIN
+             `user` AS u2
+             ON
+                 c.to_user_id = u2.id
+        where c.task_id = #{taskId}
+    </select>
+
+    <select id="getMyComments" resultType="org.task.backend.model.entity.Comment">
+        SELECT c.id,
+               u1.id     as userId,
+               u1.`name` as userName,
+               u2.id     as toUserId,
+               u2.`name` as toUsername,
+               c.content,
+               c.task_id as taskId,
+               c.created_at,
+               t.content as taskContent
+        FROM `comment` AS c
+                 INNER JOIN
+             `user` AS u1
+             ON
+                 c.user_id = u1.id
+                 left JOIN
+             `user` AS u2
+             ON
+                 c.to_user_id = u2.id
+        left join task t on c.task_id = t.id
+        where u1.id = #{userId} or u2.id = #{userId}
+    </select>
 </mapper>

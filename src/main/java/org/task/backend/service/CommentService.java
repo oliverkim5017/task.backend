@@ -1,5 +1,6 @@
 package org.task.backend.service;
 
+import org.task.backend.model.dto.CommentDto;
 import org.task.backend.model.entity.Comment;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,8 +13,11 @@ import java.util.List;
 */
 public interface CommentService extends IService<Comment> {
 
-	List<Comment> getComments(int taskId);
+	List<Comment> getComments(Integer taskId);
 
-	Comment addComment(int taskId, String content, int userId);
+	Boolean addComment(int taskId, CommentDto commentDto, int userId);
+
+
+	List<Comment> getMyComments(Integer userId);
 
 }
