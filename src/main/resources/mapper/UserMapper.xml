@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.task.backend.mapper.UserMapper">
-    
+
     <resultMap id="UserMap" type="org.task.backend.model.entity.User">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="username" column="username" jdbcType="VARCHAR"/>
         <result property="password" column="password" jdbcType="VARCHAR"/>
         <result property="name" column="name"/>
-        <result property="teamId" column="teamId" jdbcType="INTEGER"/>
+        <result property="departmentId" column="departmentId" jdbcType="INTEGER"/>
         <result property="roleId" column="roleId"/>
-        <association property="team" resultMap="org.task.backend.mapper.TeamMapper.TeamMap"/>
+        <association property="department" resultMap="org.task.backend.mapper.UserMapper.department"/>
         <association property="role" resultMap="org.task.backend.mapper.RoleMapper.RoleMapper"/>
+    </resultMap>
+
+    <resultMap id="department" type="org.task.backend.model.entity.Department">
+        <id property="id" column="department_id"/>
+        <result property="name" column="departmentName"/>
+        <result property="parentId" column="parentId"/>
     </resultMap>
 
     <select id="getById" resultType="org.task.backend.model.entity.User">
@@ -19,14 +25,15 @@
             user.username,
             user.password,
             user.name,
-            user.team_id as teamId,
+            user.department_id as departmentId,
             user.role_id as roleId,
-            team.id as team_id,
-            team.name as team_name,
+            department.id as department_id,
+            department.name as department_name,
+            department.parent_id as parent_id,
             role.id as role_id,
             role.name as role_name
         FROM user
-                 left join team on user.team_id = team.id
+                 left join department on user.department_id = department.id
                  left join role on user.role_id = role.id
         WHERE user.id = #{id}
     </select>

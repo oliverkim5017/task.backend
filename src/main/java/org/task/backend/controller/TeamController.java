@@ -55,7 +55,7 @@ public class TeamController {
 	@DeleteMapping("/delTeam/{id}")
 	public Result delTeam(@PathVariable int id) {
 		List<User> users = userService.list(new QueryWrapper<User>().lambda()
-				.eq(User::getTeamId, id));
+				.eq(User::getDepartmentId, id));
 		if (users != null) {
 			return Result.error("删除失败: 已分配组员");
 		} else {

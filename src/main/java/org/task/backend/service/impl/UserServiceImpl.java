@@ -41,7 +41,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		if (!user.getPassword().equals(hashedPassword)) {
 			throw new RuntimeException("用户名或密码错误");
 		}
-		return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getName(), user.getTeamId(), user.getRoleId());
+		return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getName(), user.getDepartmentId(), user.getRoleId());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		user.setUsername(registerDto.getUsername());
 		user.setPassword(hashedPassword);
 		user.setName(registerDto.getName());
-		user.setTeamId(registerDto.getTeamId());
+		user.setDepartmentId(registerDto.getTeamId());
 		Role role = roleService.getOne(new QueryWrapper<Role>().lambda()
 				.eq(Role::isDefaultRole, true));
 		user.setRoleId(role.getId());
@@ -65,7 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		if (affectedRow == 0) {
 			throw new RuntimeException("注册失败");
 		}
-		return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getName(), user.getTeamId(), user.getRoleId());
+		return JwtUtil.generateToken(user.getId(), user.getUsername(), user.getName(), user.getDepartmentId(), user.getRoleId());
 	}
 
 

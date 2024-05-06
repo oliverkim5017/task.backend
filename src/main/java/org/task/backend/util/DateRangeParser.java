@@ -13,16 +13,19 @@ import java.util.StringTokenizer;
 public class DateRangeParser {
 
 	public static LocalDateTime[] parseDateRange(String registerDateRange) {
-		StringTokenizer st = new StringTokenizer(registerDateRange, "-");
-		String startDateStr = st.nextToken() + "-" + st.nextToken() + "-" + st.nextToken();
-		String endDateStr = st.nextToken() + "-" + st.nextToken() + "-" + st.nextToken();
+		try {
+			StringTokenizer st = new StringTokenizer(registerDateRange, "~");
+			String startDateStr = st.nextToken() + "-" + st.nextToken() + "-" + st.nextToken();
+			String endDateStr = st.nextToken() + "-" + st.nextToken() + "-" + st.nextToken();
 
-		LocalDate startDate = LocalDate.parse(startDateStr);
-		LocalDate endDate = LocalDate.parse(endDateStr);
+			LocalDate startDate = LocalDate.parse(startDateStr);
+			LocalDate endDate = LocalDate.parse(endDateStr);
 
-		LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.MIDNIGHT);
-		LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.MAX);
-
-		return new LocalDateTime[]{startDateTime, endDateTime};
+			LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.MIDNIGHT);
+			LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.MAX);
+			return new LocalDateTime[]{startDateTime, endDateTime};
+		} catch (Exception e) {
+			return new LocalDateTime[]{};
+		}
 	}
 }

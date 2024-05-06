@@ -9,4 +9,6 @@ import org.task.backend.model.entity.Role;
  * @since 2024-03-13
  */
 public interface RoleService extends IService<Role> {
+	boolean resetDefaultRole();
+
 }

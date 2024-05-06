@@ -8,4 +8,8 @@
         <result property="defaultRole" column="defaultRole" jdbcType="BOOLEAN"/>
     </resultMap>
 
+    <update id="resetDefaultRole">
+        update role set default_role = 0
+    </update>
+
 </mapper>

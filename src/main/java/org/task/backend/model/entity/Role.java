@@ -17,5 +17,6 @@ public class Role {
 	private Integer id;
 	private String name;
 	private boolean defaultRole;
+	private boolean disabled;
 
 }

@@ -9,4 +9,9 @@ import org.task.backend.model.entity.Role;
  * @since 2024-03-13
  */
 public interface RoleMapper extends BaseMapper<Role> {
+
+
+	int resetDefaultRole();
+
+
 }

@@ -1,6 +1,5 @@
 package org.task.backend.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +12,7 @@ import org.task.backend.model.dto.UserSelectDto;
 import org.task.backend.model.entity.LoginUser;
 import org.task.backend.model.entity.User;
 import org.task.backend.model.vo.result.Result;
+import org.task.backend.service.DepartmentService;
 import org.task.backend.service.RoleService;
 import org.task.backend.service.TeamService;
 import org.task.backend.service.UserService;
@@ -35,6 +35,8 @@ public class UserController {
 	private RoleService roleService;
 	@Resource
 	private TeamService teamService;
+	@Resource
+	private DepartmentService departmentService;
 
 	@GetMapping("/myInfo")
 	public Result myInfo() {
@@ -44,7 +46,7 @@ public class UserController {
 		int userId = (int) claims.get("userId");
 		User user = userService.getUserById(userId);
 		roleService.getOptById(user.getRoleId()).ifPresent(user::setRole);
-		teamService.getOptById(user.getTeamId()).ifPresent(user::setTeam);
+		departmentService.getOptById(user.getDepartmentId()).ifPresent(user::setDepartment);
 		return Result.success(user);
 	}
 
@@ -87,7 +89,7 @@ public class UserController {
 			UserSelectDto userSelectDto = new UserSelectDto();
 			userSelectDto.setId(user.getId());
 			userSelectDto.setName(user.getName());
-			userSelectDto.setTeamId(user.getTeamId());
+			userSelectDto.setTeamId(user.getDepartmentId());
 			userSelectDtos.add(userSelectDto);
 		});
 		return Result.success(userSelectDtos);
