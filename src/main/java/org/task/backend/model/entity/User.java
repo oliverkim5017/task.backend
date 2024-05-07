@@ -26,5 +26,6 @@ public class User {
 	private Integer roleId;
 	@TableField(exist = false)
 	private Role role;
+	private boolean disabled;
 
 }

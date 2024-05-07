@@ -16,7 +16,7 @@ public class Status implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     private String name;
-    private boolean isDefault;
+    private boolean defaultStatus;
     private String hexCode;
 
 }

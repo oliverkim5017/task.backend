@@ -82,7 +82,7 @@ public class ApiController {
 
 	@PostMapping("/saveStatus")
 	public Result saveStatus(@RequestBody Status status) {
-		if (status.isDefault()) {
+		if (status.isDefaultStatus()) {
 			boolean b = statusService.resetDefaultStatus();
 			if (!b) {
 				return Result.updateFailed();

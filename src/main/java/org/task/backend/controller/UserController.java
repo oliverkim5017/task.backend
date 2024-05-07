@@ -1,5 +1,6 @@
 package org.task.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.jsonwebtoken.Claims;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
@@ -9,7 +10,9 @@ import org.task.backend.config.LoginThreadLocal;
 import org.task.backend.model.dto.LoginDto;
 import org.task.backend.model.dto.RegisterDto;
 import org.task.backend.model.dto.UserSelectDto;
+import org.task.backend.model.entity.Department;
 import org.task.backend.model.entity.LoginUser;
+import org.task.backend.model.entity.Role;
 import org.task.backend.model.entity.User;
 import org.task.backend.model.vo.result.Result;
 import org.task.backend.service.DepartmentService;
@@ -93,6 +96,51 @@ public class UserController {
 			userSelectDtos.add(userSelectDto);
 		});
 		return Result.success(userSelectDtos);
+	}
+
+	@GetMapping("/getUser")
+	public Result getUser(String username, String name, Integer departmentId) {
+		QueryWrapper<User> wrapper = new QueryWrapper<>();
+		if (username != null && !username.isBlank()) {
+			wrapper.lambda().like(User::getUsername, username);
+		}
+		if (name != null && !name.isBlank()) {
+			wrapper.lambda().like(User::getName, name);
+		}
+		if (departmentId != null) {
+			wrapper.lambda().eq(User::getDepartmentId, departmentId);
+		}
+		List<User> users = userService.list(wrapper);
+
+		List<Integer> departmentIds = users.stream().map(User::getDepartmentId).distinct().toList();
+		List<Integer> roleIds = users.stream().map(User::getRoleId).distinct().toList();
+		departmentService.list(new QueryWrapper<Department>().lambda().in(Department::getId, departmentIds)).forEach(department -> {
+			users.forEach(user -> {
+				if (user.getDepartmentId().equals(department.getId())) {
+					user.setDepartment(department);
+				}
+			});
+		});
+		roleService.list(new QueryWrapper<Role>().lambda().in(Role::getId, roleIds)).forEach(role -> {
+			users.forEach(user -> {
+				if (user.getRoleId().equals(role.getId())) {
+					user.setRole(role);
+				}
+			});
+		});
+		return Result.success(users);
+	}
+
+	@PostMapping("/saveUser")
+	public Result saveUser(@RequestBody User user) {
+		if (user.getRoleId() == null) {
+			return Result.error("请选择角色");
+		}
+		if (user.getDepartmentId() == null) {
+			return Result.error("请选择部门");
+		}
+		boolean saved = userService.saveOrUpdate(user);
+		return saved? Result.success("success") : Result.saveFailed();
 	}
 
 }
