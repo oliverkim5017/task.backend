@@ -92,7 +92,7 @@ public class UserController {
 			UserSelectDto userSelectDto = new UserSelectDto();
 			userSelectDto.setId(user.getId());
 			userSelectDto.setName(user.getName());
-			userSelectDto.setTeamId(user.getDepartmentId());
+			userSelectDto.setDepartmentId(user.getDepartmentId());
 			userSelectDtos.add(userSelectDto);
 		});
 		return Result.success(userSelectDtos);

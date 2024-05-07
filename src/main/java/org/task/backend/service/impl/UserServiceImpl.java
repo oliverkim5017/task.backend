@@ -57,7 +57,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		user.setUsername(registerDto.getUsername());
 		user.setPassword(hashedPassword);
 		user.setName(registerDto.getName());
-		user.setDepartmentId(registerDto.getTeamId());
+		user.setDepartmentId(registerDto.getDepartmentId());
 		Role role = roleService.getOne(new QueryWrapper<Role>().lambda()
 				.eq(Role::isDefaultRole, true));
 		user.setRoleId(role.getId());

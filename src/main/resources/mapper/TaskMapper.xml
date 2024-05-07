@@ -4,81 +4,20 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.task.backend.mapper.TaskMapper">
 
-    <resultMap id="TaskMap" type="org.task.backend.model.entity.Task">
-        <id property="id" column="taskId"/>
-        <result property="content" column="content"/>
-        <result property="teamId" column="teamId"/>
-        <result property="stateId" column="stateId"/>
-        <result property="creatorId" column="creatorId"/>
-        <result property="deadLine" column="deadLine"/>
-        <association property="team" resultMap="org.task.backend.mapper.TeamMapper.TeamMap"/>
-        <collection property="nodes" resultMap="org.task.backend.mapper.TaskNodeMapper.TaskNodeMap"/>
+    <resultMap id="BaseResultMap" type="org.task.backend.model.entity.Task">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="content" column="content" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="approveUserId" column="approve_user_id" jdbcType="INTEGER"/>
+            <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+            <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+            <result property="creatorId" column="creator_id" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
 
-    <select id="getTaskById" resultMap="TaskMap">
-        SELECT t.id              as taskId,
-               t.content,
-               t.team_id         as teamId,
-               t.state_id        as stateId,
-               t.creator_id      as creatorId,
-               t.dead_line       as deadLine,
-               team.name         as teamName,
-               tn.id             as taskNodeId,
-               tn.parent_task_id as parentTaskId,
-               tn.content        as nodeContent,
-               tn.user_id        as nodeUserId,
-               tn.state_id       as nodeStateId,
-               tn.node_index     as nodeIndex,
-               tn.creator_id     as nodeCreatorId,
-               tn.dead_line      as nodeDeadLine
-        FROM task t
-                 LEFT JOIN team ON t.team_id = team.id
-                 LEFT JOIN task_state ts ON t.state_id = ts.id
-                 LEFT JOIN user creator ON t.creator_id = creator.id
-                 LEFT JOIN task_node tn ON t.id = tn.parent_task_id
-        WHERE t.id = #{id}
-        order by tn.node_index;
-    </select>
 
-    <select id="getTasks" resultMap="TaskMap">
-        SELECT t.id as taskId,
-        t.content,
-        t.team_id as teamId,
-        t.state_id as stateId,
-        t.creator_id as creatorId,
-        t.dead_line as deadLine,
-        team.name as teamName,
-        tn.id as taskNodeId,
-        tn.parent_task_id as parentTaskId,
-        tn.content as nodeContent,
-        tn.user_id as nodeUserId,
-        tn.state_id as nodeStateId,
-        tn.node_index as nodeIndex,
-        tn.creator_id as nodeCreatorId,
-        tn.dead_line as nodeDeadLine
-        FROM task t
-        LEFT JOIN team ON t.team_id = team.id
-        LEFT JOIN task_state ts ON t.state_id = ts.id
-        LEFT JOIN user creator ON t.creator_id = creator.id
-        LEFT JOIN task_node tn ON t.id = tn.parent_task_id
-        <where>
-            <if test="teamIds != null and teamIds.size() > 0">
-                AND t.team_id in
-                <foreach collection="teamIds" item="teamId" open="(" separator="," close=")">
-                    #{teamId}
-                </foreach>
-            </if>
-            <if test="stateIds != null and stateIds.size() > 0">
-                AND t.state_id in
-                <foreach collection="stateIds" item="stateId" open="(" separator="," close=")">
-                    #{stateId}
-                </foreach>
-            </if>
-            <if test="startTime != null and endTime != null">
-                AND t.dead_line between #{startTime} and #{endTime}
-            </if>
-        </where>
-        order by t.id, tn.node_index;
-    </select>
+
+
 </mapper>

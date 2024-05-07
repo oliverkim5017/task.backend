@@ -12,8 +12,5 @@ import java.util.List;
  * @since 2024-03-17
  */
 public interface TaskMapper extends BaseMapper<Task> {
-	Task getTaskById(Integer id);
-
-	List<Task> getTasks(List<Integer>  teamIds, List<Integer>  stateIds, LocalDate startTime, LocalDate endTime);
 
 }

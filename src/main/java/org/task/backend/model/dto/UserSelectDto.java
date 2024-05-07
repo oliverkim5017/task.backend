@@ -12,5 +12,5 @@ public class UserSelectDto {
 
 	private int id;
 	private String name;
-	private int teamId;
+	private int departmentId;
 }

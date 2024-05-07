@@ -3,13 +3,10 @@ package org.task.backend.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.task.backend.config.LoginThreadLocal;
 import org.task.backend.mapper.ProjectMapper;
-import org.task.backend.model.entity.DateRange;
-import org.task.backend.model.entity.Department;
-import org.task.backend.model.entity.Project;
-import org.task.backend.model.entity.User;
+import org.task.backend.model.entity.*;
 import org.task.backend.model.vo.result.Result;
 import org.task.backend.service.DepartmentService;
 import org.task.backend.service.ProjectService;
@@ -38,15 +35,18 @@ public class ProjectController {
 	private StatusService statusService;
 
 	@GetMapping("/getProjects")
-	public Result getProjects(String projectName, String startTime, String endTime, String createTime, String updateTime) {
+	public Result getProjects(String name, String startTime, String endTime, String createTime, String updateTime) {
 
 		DateRange start = new DateRange();
 		DateRange end = new DateRange();
 		DateRange create = new DateRange();
 		DateRange update = new DateRange();
 
-		QueryWrapper<Project> queryWrapper = new QueryWrapper<>();
-		LambdaQueryWrapper<Project> lambdaQuery = queryWrapper.lambda().like(Project::getName, projectName);
+		LambdaQueryWrapper<Project> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+
+		if (name != null && !name.isBlank()) {
+			lambdaQueryWrapper.like(Project::getName, name);
+		}
 
 		LocalDateTime[] localDateTimes = DateRangeParser.parseDateRange(startTime);
 		if (localDateTimes.length > 0) {
@@ -71,27 +71,27 @@ public class ProjectController {
 		}
 
 		if (start.getStartDate() != null && start.getEndDate() != null) {
-			lambdaQuery.and(wrapper ->
+			lambdaQueryWrapper.and(wrapper ->
 					wrapper.between(Project::getStartTime, start.getStartDate(), start.getEndDate())
 			);
 		}
 		if (end.getStartDate() != null && end.getEndDate() != null) {
-			lambdaQuery.and(wrapper ->
+			lambdaQueryWrapper.and(wrapper ->
 					wrapper.between(Project::getEndTime, end.getStartDate(), end.getEndDate())
 			);
 		}
 		if (create.getStartDate() != null && create.getEndDate() != null) {
-			lambdaQuery.and(wrapper ->
+			lambdaQueryWrapper.and(wrapper ->
 					wrapper.between(Project::getCreateTime, create.getStartDate(), create.getEndDate())
 			);
 		}
 		if (update.getStartDate() != null && update.getEndDate() != null){
-			lambdaQuery.and(wrapper ->
+			lambdaQueryWrapper.and(wrapper ->
 					wrapper.between(Project::getUpdateTime, update.getStartDate(), update.getEndDate())
 			);
 		}
 
-		List<Project> projects = projectService.list(lambdaQuery);
+		List<Project> projects = projectService.list(lambdaQueryWrapper);
 		List<Integer> departmentIds = projects.stream().map(Project::getDepartmentId).distinct().toList();
 		if (!departmentIds.isEmpty()) {
 			List<Department> departments = departmentService.list(new QueryWrapper<Department>().lambda().in(Department::getId, departmentIds));
@@ -101,26 +101,51 @@ public class ProjectController {
 			});
 		}
 
-		List<Integer> userIds = new java.util.ArrayList<>(projects.stream().map(Project::getUserId).distinct().toList());
-		userIds.addAll(projects.stream().map(Project::getApproveUserId).distinct().toList());
 
-
-		if (userIds.isEmpty()) {
-			return Result.success(projects);
-		}
-
-		List<User> users = userService.list(new QueryWrapper<User>().lambda().in(User::getId, userIds));
+		List<User> users = userService.list();
 		projects.forEach(project -> {
 			User user = users.stream().filter(u -> u.getId().equals(project.getUserId())).findFirst().orElse(null);
 			project.setUser(user);
 			User approveUser = users.stream().filter(u -> u.getId().equals(project.getApproveUserId())).findFirst().orElse(null);
 			project.setApproveUser(approveUser);
+			User createdBY = users.stream().filter(u -> u.getId().equals(project.getCreatedBy())).findFirst().orElse(null);
+			project.setCreator(createdBY);
+			User updatedBy = users.stream().filter(u -> u.getId().equals(project.getUpdatedBy())).findFirst().orElse(null);
+			project.setUpdater(updatedBy);
 		});
 
 		return Result.success(projects);
 
 	}
 
+	@PostMapping("/saveProject")
+	public Result saveProject(@RequestBody Project project) {
+		if (project.getDepartmentId() == 0) {
+			return Result.error("请选择负责部门");
+		}
+		if (project.getUserId() == 0) {
+			return Result.error("请选择负责人");
+		}
+		if (project.getApproveUserId() == 0) {
+			return Result.error("请选择审批人");
+		}
+		if (project.getStatusId() == 0) {
+			Status status = statusService.getOne(new QueryWrapper<Status>().lambda().eq(Status::isDefaultStatus, true));
+			project.setStatusId(status.getId());
+		}
+		Integer userId = LoginThreadLocal.getUserId();
+		project.setUpdatedBy(userId);
+		if (project.getId() == null) {
+			project.setCreatedBy(userId);
+		}
+		boolean saved = projectService.saveOrUpdate(project);
+		return saved? Result.success("success") : Result.saveFailed();
+	}
 
+	@DeleteMapping("/delProject/{id}")
+	public Result delProject(@PathVariable Integer id) {
+		boolean removed = projectService.removeById(id);
+		return removed? Result.success("success") : Result.deleteFailed();
+	}
 
 }

@@ -18,7 +18,7 @@ public class RegisterDto {
 	private String password;
 	@NotBlank(message = "请输入姓名")
 	private String name;
-	@Positive(message = "请选择组别")
-	private int teamId;
+	@Positive(message = "请选择部门")
+	private int departmentId;
 
 }
