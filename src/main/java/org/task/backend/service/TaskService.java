@@ -13,10 +13,5 @@ import java.util.List;
 */
 public interface TaskService extends IService<Task> {
 
-	Task getTaskById(Integer id);
-
-	List<Task> getTasks(List<Integer> teamIds, List<Integer>  stateIds, LocalDate startTime, LocalDate endTime);
-
-	boolean removeTaskById(int id);
 
 }

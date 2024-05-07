@@ -12,6 +12,8 @@ import org.task.backend.model.entity.Department;
 */
 public interface DepartmentMapper extends BaseMapper<Department> {
 
+	int removeDeptById(int id);
+
 }
 
 

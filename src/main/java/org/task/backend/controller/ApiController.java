@@ -75,8 +75,18 @@ public class ApiController {
 	}
 
 	@GetMapping("/getStatus")
-	public Result getStatus() {
-		List<Status> list = statusService.list();
+	public Result getStatus(String name, String forTask) {
+
+		QueryWrapper<Status> wrapper = new QueryWrapper<>();
+		if (name != null && !name.isBlank()) {
+			wrapper.lambda().like(Status::getName, name);
+		}
+
+		if (forTask != null && !forTask.isBlank()) {
+			wrapper.lambda().eq(Status::isForTask, Boolean.parseBoolean(forTask));
+		}
+
+		List<Status> list = statusService.list(wrapper);
 		return Result.success(list);
 	}
 
@@ -99,6 +109,16 @@ public class ApiController {
 			return Result.error("该状态被使用中，无法删除");
 		}
 		boolean removed = statusService.removeById(id);
+		return removed? Result.success("success"): Result.deleteFailed();
+	}
+
+	@DeleteMapping("/delDept/{id}")
+	public Result delDept(@PathVariable int id) {
+		List<User> list = userService.list(new QueryWrapper<User>().lambda().eq(User::getDepartmentId, id));
+		if (!list.isEmpty()) {
+			return Result.error("该部门下有用户，无法删除");
+		}
+		boolean removed = departmentService.removeDeptById(id);
 		return removed? Result.success("success"): Result.deleteFailed();
 	}
 

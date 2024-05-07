@@ -14,4 +14,6 @@ public interface DepartmentService extends IService<Department> {
 
 	Department getDepartmentById(int id);
 
+	boolean removeDeptById(int id);
+
 }

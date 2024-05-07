@@ -27,14 +27,10 @@ public class Task {
 	@TableField(exist = false)
 	private Team team;
 	private Integer stateId;
-	@TableField(exist = false)
-	private TaskState state;
 	private Integer creatorId;
 	@TableField(exist = false)
 	private User creator;
 	private LocalDate deadLine;
-	@TableField(exist = false)
-	private List<TaskNode> nodes;
 
 	public Task(TaskDto taskDto) {
 		this.id = taskDto.getId();
@@ -42,6 +38,5 @@ public class Task {
 		this.teamId = taskDto.getTeamId();
 		this.stateId = taskDto.getStateId();
 		this.deadLine = taskDto.getDeadLine();
-		this.nodes = new ArrayList<>();
 	}
 }

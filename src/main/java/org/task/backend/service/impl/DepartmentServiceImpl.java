@@ -24,6 +24,11 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 	public Department getDepartmentById(int id) {
 		return departmentMapper.selectById(id);
 	}
+
+	@Override
+	public boolean removeDeptById(int id) {
+		return departmentMapper.removeDeptById(id) > 0;
+	}
 }
 
 

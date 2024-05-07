@@ -10,8 +10,19 @@
             <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
     </resultMap>
 
-
-
+    <delete id="removeDeptById">
+        WITH RECURSIVE SubDepartments AS (
+            SELECT id
+            FROM department
+            WHERE id = #{id}
+            UNION ALL
+            SELECT d.id
+            FROM department d
+                     INNER JOIN SubDepartments sd ON d.parent_id = sd.id
+        )
+        DELETE FROM department
+        WHERE id IN (SELECT id FROM SubDepartments);
+    </delete>
 
 
 </mapper>

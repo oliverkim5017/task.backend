@@ -18,5 +18,6 @@ public class Status implements Serializable {
     private String name;
     private boolean defaultStatus;
     private String hexCode;
+    private boolean forTask;
 
 }
