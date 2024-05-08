@@ -37,6 +37,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 		if (user == null) {
 			throw new RuntimeException("用户不存在");
 		}
+		if (user.isDisabled()) {
+			throw new RuntimeException("用户已被禁用");
+		}
 		String hashedPassword = SHA256Util.hashPassword(loginDto.getPassword());
 		if (!user.getPassword().equals(hashedPassword)) {
 			throw new RuntimeException("用户名或密码错误");

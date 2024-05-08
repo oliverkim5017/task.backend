@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.task.backend.mapper.OperationLogMapper">
+
+    <resultMap id="OperationLogResultMap" type="org.task.backend.model.entity.OperationLog">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="params" property="params"/>
+        <result column="user_id" property="userId"/>
+        <result column="time" property="time"/>
+        <result column="code" property="code"/>
+        <association property="user" javaType="org.task.backend.model.entity.User">
+            <result column="username" property="name"/>
+        </association>
+    </resultMap>
+
+    <select id="getLogs" resultMap="OperationLogResultMap">
+        SELECT ol.*,user.name as username FROM operation_log ol
+        join user on ol.user_id = user.id
+    </select>
+</mapper>

@@ -3,6 +3,7 @@ package org.task.backend.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.task.backend.annotation.Operation;
 import org.task.backend.model.entity.*;
 import org.task.backend.model.vo.result.Result;
 import org.task.backend.service.*;
@@ -27,6 +28,8 @@ public class ApiController {
 	private StatusService statusService;
 	@Resource
 	private ProjectService projectService;
+	@Resource
+	private OperationLogService operationLogService;
 
 
 
@@ -36,6 +39,7 @@ public class ApiController {
 		return Result.success(departments);
 	}
 
+	@Operation("编辑部门")
 	@PostMapping("/saveOrUpdateDept")
 	public Result saveOrUpdateDept(@RequestBody Department department) {
 		boolean save = departmentService.saveOrUpdate(department);
@@ -52,6 +56,7 @@ public class ApiController {
 		return Result.success(roles);
 	}
 
+	@Operation("编辑角色")
 	@PostMapping("/saveRole")
 	public Result saveRole(@RequestBody Role role) {
 		if (role.isDefaultRole()) {
@@ -64,6 +69,7 @@ public class ApiController {
 		return saved? Result.success("success"): Result.saveFailed();
 	}
 
+	@Operation("删除角色")
 	@DeleteMapping("/delRole/{id}")
 	public Result delRole(@PathVariable int id) {
 		List<User> list = userService.list(new QueryWrapper<User>().lambda().eq(User::getRoleId, id));
@@ -90,6 +96,7 @@ public class ApiController {
 		return Result.success(list);
 	}
 
+	@Operation("编辑项目状态")
 	@PostMapping("/saveStatus")
 	public Result saveStatus(@RequestBody Status status) {
 		if (status.isDefaultStatus()) {
@@ -102,6 +109,7 @@ public class ApiController {
 		return saved? Result.success("success"): Result.saveFailed();
 	}
 
+	@Operation("删除项目状态")
 	@DeleteMapping("/delStatus/{id}")
 	public Result delStatus(@PathVariable int id) {
 		List<Project> list = projectService.list(new QueryWrapper<Project>().lambda().eq(Project::getStatusId, id));
@@ -112,6 +120,7 @@ public class ApiController {
 		return removed? Result.success("success"): Result.deleteFailed();
 	}
 
+	@Operation("删除部门")
 	@DeleteMapping("/delDept/{id}")
 	public Result delDept(@PathVariable int id) {
 		List<User> list = userService.list(new QueryWrapper<User>().lambda().eq(User::getDepartmentId, id));
@@ -120,6 +129,12 @@ public class ApiController {
 		}
 		boolean removed = departmentService.removeDeptById(id);
 		return removed? Result.success("success"): Result.deleteFailed();
+	}
+
+	@GetMapping("/getOperationLog")
+	public Result getOperationLog() {
+		List<OperationLog> operationLogs = operationLogService.getLogs();
+		return Result.success(operationLogs);
 	}
 
 

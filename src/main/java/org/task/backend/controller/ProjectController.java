@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.task.backend.annotation.Operation;
 import org.task.backend.config.LoginThreadLocal;
 import org.task.backend.mapper.ProjectMapper;
 import org.task.backend.model.entity.*;
@@ -119,6 +120,7 @@ public class ProjectController {
 
 	}
 
+	@Operation("删除项目")
 	@PostMapping("/saveProject")
 	public Result saveProject(@RequestBody Project project) {
 		if (project.getDepartmentId() == 0) {

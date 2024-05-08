@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.task.backend.annotation.Operation;
 import org.task.backend.config.LoginThreadLocal;
 import org.task.backend.model.dto.TaskDto;
 import org.task.backend.model.entity.Project;
@@ -42,6 +43,7 @@ public class TaskController {
 		return b ? Result.success("success") : Result.deleteFailed();
 	}
 
+	@Operation("编辑任务")
 	@PostMapping("/saveTask")
 	public Result saveTask(@RequestBody Task task) {
 		if (task.getContent() == null || task.getContent().isBlank()) {
