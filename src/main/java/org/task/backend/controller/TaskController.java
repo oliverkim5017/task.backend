@@ -8,10 +8,12 @@ import org.task.backend.annotation.Operation;
 import org.task.backend.config.LoginThreadLocal;
 import org.task.backend.model.dto.TaskDto;
 import org.task.backend.model.entity.Project;
+import org.task.backend.model.entity.Status;
 import org.task.backend.model.entity.Task;
 import org.task.backend.model.entity.User;
 import org.task.backend.model.vo.result.Result;
 import org.task.backend.service.ProjectService;
+import org.task.backend.service.StatusService;
 import org.task.backend.service.TaskService;
 import org.task.backend.service.UserService;
 import org.task.backend.util.DateRangeParser;
@@ -36,11 +38,25 @@ public class TaskController {
 	private ProjectService projectService;
 	@Resource
 	private UserService userService;
+	@Resource
+	private StatusService statusService;
 
 	@DeleteMapping("/delTask/{id}")
 	public Result delTask(@PathVariable Integer id) {
 		boolean b = taskService.removeById(id);
 		return b ? Result.success("success") : Result.deleteFailed();
+	}
+
+	@GetMapping("/getTaskById/{id}")
+	public Result getTaskById(@PathVariable int id) {
+		Task task = taskService.getById(id);
+		if (task == null) {
+			return Result.error("任务不存在");
+		}
+		Status status = statusService.getById(task.getStateId());
+		task.setState(status);
+		return Result.success(task);
+
 	}
 
 	@Operation("编辑任务")
@@ -63,6 +79,9 @@ public class TaskController {
 		}
 		if (task.getProjectId() == null) {
 			return Result.error("须指定项目");
+		}
+		if (task.getStateId() == 0) {
+			return Result.error("任务状态不能为空");
 		}
 		if (task.getId() == null) {
 			Integer userId = LoginThreadLocal.getUserId();
@@ -167,6 +186,29 @@ public class TaskController {
 
 
 	}
+
+	@GetMapping("/getMyTasks")
+	public Result getMyTasks() {
+		Integer userId = LoginThreadLocal.getUserId();
+
+		LocalDateTime now = LocalDateTime.now();
+
+		// 只找已经开始的——开始时间早于现在
+		List<Task> tasks = taskService.list(new QueryWrapper<Task>().lambda().eq(Task::getUserId, userId)
+				.le(Task::getStartTime, now));
+
+		List<Status> statuses = statusService.list();
+		tasks.forEach(task -> {
+			Optional<Status> status = statuses.stream().filter(s -> s.getId().equals(task.getStateId())).findFirst();
+			status.ifPresent(task::setState);
+		});
+		tasks.removeIf(task -> task.getState().isForFinish());
+
+		return Result.success(tasks);
+	}
+
+
+
 
 
 }

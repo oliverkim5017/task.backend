@@ -11,6 +11,7 @@
         <result column="user_id" property="userId"/>
         <result column="time" property="time"/>
         <result column="code" property="code"/>
+        <result column="ip" property="ip"/>
         <association property="user" javaType="org.task.backend.model.entity.User">
             <result column="username" property="name"/>
         </association>
@@ -18,6 +19,6 @@
 
     <select id="getLogs" resultMap="OperationLogResultMap">
         SELECT ol.*,user.name as username FROM operation_log ol
-        join user on ol.user_id = user.id
+        join user on ol.user_id = user.id order by ol.time desc
     </select>
 </mapper>

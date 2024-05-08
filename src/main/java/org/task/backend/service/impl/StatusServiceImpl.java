@@ -21,8 +21,8 @@ public class StatusServiceImpl extends ServiceImpl<StatusMapper, Status>
 	private StatusMapper statusMapper;
 
 	@Override
-	public boolean resetDefaultStatus() {
-		return statusMapper.resetDefaultStatus() > 0;
+	public boolean resetDefaultStatus(boolean forTask) {
+		return statusMapper.resetDefaultStatus(forTask) > 0;
 	}
 }
 

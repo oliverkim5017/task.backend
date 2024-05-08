@@ -31,6 +31,9 @@ public class Task {
 	private Integer projectId;
 	@TableField(exist = false)
 	private Project project;
+	private int stateId;
+	@TableField(exist = false)
+	private Status state;
 	private Integer parentId;
 	private Integer creatorId;
 	@TableField(exist = false)

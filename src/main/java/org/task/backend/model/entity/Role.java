@@ -18,5 +18,6 @@ public class Role {
 	private String name;
 	private boolean defaultRole;
 	private boolean disabled;
+	private boolean edit;
 
 }

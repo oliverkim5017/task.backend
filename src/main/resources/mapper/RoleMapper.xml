@@ -6,6 +6,7 @@
         <id property="id" column="roleId"/>
         <result property="name" column="roleName"/>
         <result property="defaultRole" column="defaultRole" jdbcType="BOOLEAN"/>
+        <result property="edit" column="edit"/>
     </resultMap>
 
     <update id="resetDefaultRole">

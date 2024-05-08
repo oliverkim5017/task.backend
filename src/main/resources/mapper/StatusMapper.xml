@@ -11,7 +11,7 @@
     </resultMap>
 
     <update id="resetDefaultStatus">
-        update status set default_Status = 0
+        update status set default_Status = 0 where for_task = #{forTask}
     </update>
 
 </mapper>

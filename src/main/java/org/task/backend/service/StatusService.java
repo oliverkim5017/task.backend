@@ -11,6 +11,6 @@ import org.task.backend.model.entity.Status;
 */
 public interface StatusService extends IService<Status> {
 
-	boolean resetDefaultStatus();
+	boolean resetDefaultStatus(boolean forTask);
 
 }

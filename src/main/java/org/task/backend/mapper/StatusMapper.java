@@ -12,7 +12,7 @@ import org.task.backend.model.entity.Status;
 */
 public interface StatusMapper extends BaseMapper<Status> {
 
-	int resetDefaultStatus();
+	int resetDefaultStatus(boolean forTask);
 
 }
 
