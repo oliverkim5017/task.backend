@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 import org.task.backend.annotation.Operation;
+import org.task.backend.model.dto.ChartDto;
 import org.task.backend.model.entity.*;
 import org.task.backend.model.vo.result.Result;
 import org.task.backend.service.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +33,8 @@ public class ApiController {
 	private ProjectService projectService;
 	@Resource
 	private OperationLogService operationLogService;
-
+	@Resource
+	private TaskService taskService;
 
 
 	@GetMapping("/getDepartments")
@@ -43,7 +47,7 @@ public class ApiController {
 	@PostMapping("/saveOrUpdateDept")
 	public Result saveOrUpdateDept(@RequestBody Department department) {
 		boolean save = departmentService.saveOrUpdate(department);
-		return save? Result.success("success"): Result.saveFailed();
+		return save ? Result.success("success") : Result.saveFailed();
 	}
 
 	@GetMapping("/getRoles")
@@ -66,7 +70,7 @@ public class ApiController {
 			}
 		}
 		boolean saved = roleService.saveOrUpdate(role);
-		return saved? Result.success("success"): Result.saveFailed();
+		return saved ? Result.success("success") : Result.saveFailed();
 	}
 
 	@Operation("删除角色")
@@ -77,7 +81,7 @@ public class ApiController {
 			return Result.error("该角色下有用户，无法删除");
 		}
 		boolean removed = roleService.removeById(id);
-		return removed? Result.success("success"): Result.deleteFailed();
+		return removed ? Result.success("success") : Result.deleteFailed();
 	}
 
 	@GetMapping("/getStatus")
@@ -106,7 +110,7 @@ public class ApiController {
 			}
 		}
 		boolean saved = statusService.saveOrUpdate(status);
-		return saved? Result.success("success"): Result.saveFailed();
+		return saved ? Result.success("success") : Result.saveFailed();
 	}
 
 	@Operation("删除项目状态")
@@ -117,7 +121,7 @@ public class ApiController {
 			return Result.error("该状态被使用中，无法删除");
 		}
 		boolean removed = statusService.removeById(id);
-		return removed? Result.success("success"): Result.deleteFailed();
+		return removed ? Result.success("success") : Result.deleteFailed();
 	}
 
 	@Operation("删除部门")
@@ -128,7 +132,7 @@ public class ApiController {
 			return Result.error("该部门下有用户，无法删除");
 		}
 		boolean removed = departmentService.removeDeptById(id);
-		return removed? Result.success("success"): Result.deleteFailed();
+		return removed ? Result.success("success") : Result.deleteFailed();
 	}
 
 	@GetMapping("/getOperationLog")
@@ -137,5 +141,64 @@ public class ApiController {
 		return Result.success(operationLogs);
 	}
 
+	@GetMapping("/getProjectSummary")
+	public Result getProjectSummary(int year, int month) {
+		// 查询当月结束的项目
+		LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0, 0);
+		LocalDateTime end = LocalDateTime.of(year, month, 1, 0, 0, 0).plusMonths(1);
+		List<Project> projects = projectService.list(new QueryWrapper<Project>().lambda()
+				.between(Project::getEndTime, start, end)
+		);
+		List<Status> statuses = statusService.list(new QueryWrapper<Status>().lambda()
+				.eq(Status::isForTask, false));
+		ArrayList<ChartDto> chartDtos = new ArrayList<>();
+		statuses.forEach(status -> {
+			ChartDto chartDto = new ChartDto();
+			chartDto.setName(status.getName());
+			long count = projects.stream().filter(project -> project.getStatusId() == (status.getId())).count();
+			chartDto.setValue((int) count);
+			chartDtos.add(chartDto);
+		});
+		return Result.success(chartDtos);
+	}
+
+	@GetMapping("/getTaskSummary")
+	public Result getTaskSummary(int year, int month) {
+		// 查询当月结束的任务
+		LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0, 0);
+		LocalDateTime end = LocalDateTime.of(year, month, 1, 0, 0, 0).plusMonths(1);
+		List<Task> tasks = taskService.list(new QueryWrapper<Task>().lambda()
+				.between(Task::getEndTime, start, end)
+		);
+		List<Status> statuses = statusService.list(new QueryWrapper<Status>().lambda()
+				.eq(Status::isForTask, true));
+		ArrayList<ChartDto> chartDtos = new ArrayList<>();
+		statuses.forEach(status -> {
+			ChartDto chartDto = new ChartDto();
+			chartDto.setName(status.getName());
+			long count = tasks.stream().filter(task -> task.getStateId() == (status.getId())).count();
+			chartDto.setValue((int) count);
+			chartDtos.add(chartDto);
+		});
+		return Result.success(chartDtos);
+	}
+
+	@GetMapping("/getProjectOfDepartmentSummary")
+	public Result getProjectOfDepartmentSummary(int year, int month) {
+		// 查询当月结束的任务,按照一级部门分组
+		LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0, 0);
+		LocalDateTime end = LocalDateTime.of(year, month, 1, 0, 0, 0).plusMonths(1);
+		List<Project> projects = projectService.list();
+		List<Department> departments = departmentService.list();
+		ArrayList<ChartDto> chartDtos = new ArrayList<>();
+		departments.forEach(department -> {
+			ChartDto chartDto = new ChartDto();
+			chartDto.setName(department.getName());
+			long count = projects.stream().filter(project -> project.getDepartmentId() == (department.getId())).count();
+			chartDto.setValue((int) count);
+			chartDtos.add(chartDto);
+		});
+		return Result.success(chartDtos);
+	}
 
 }

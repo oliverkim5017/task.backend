@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.task.backend.mapper.ApproveMapper">
+
+    <resultMap id="BaseResultMap" type="org.task.backend.model.entity.Approve">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="taskId" column="task_id" jdbcType="INTEGER"/>
+        <result property="taskName" column="task_name"/>
+        <result property="startUserId" column="start_user_id" jdbcType="INTEGER"/>
+        <result property="startUserName" column="start_user_name"/>
+        <result property="approveUserId" column="approve_user_id" jdbcType="INTEGER"/>
+        <result property="approveUserName" column="approve_user_name"/>
+        <result property="remarks" column="remarks" jdbcType="VARCHAR"/>
+        <result property="reply" column="reply" jdbcType="VARCHAR"/>
+        <result property="forFinish" column="forFinish"/>
+    </resultMap>
+
+    <select id="approveMapper" resultMap="BaseResultMap">
+        SELECT a.id,
+               a.task_id,
+               t.content as task_name,
+               a.start_user_id,
+               u1.name AS start_user_name,
+               a.approve_user_id,
+               u2.name AS approve_user_name,
+               a.remarks,
+               a.reply,
+                a.for_finish as forFinish
+        FROM approve a
+                 LEFT JOIN task t ON a.task_id = t.id
+                 LEFT JOIN user u1 ON a.start_user_id = u1.id
+                 LEFT JOIN user u2 ON a.approve_user_id = u2.id
+        WHERE a.approve_user_id = #{userId} and a.reply is null
+    </select>
+
+
+</mapper>
