@@ -14,6 +14,7 @@ import org.task.backend.service.StatusService;
 import org.task.backend.service.UserService;
 import org.task.backend.util.DateRangeParser;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,26 +49,26 @@ public class ProjectController {
 			lambdaQueryWrapper.like(Project::getName, name);
 		}
 
-		LocalDateTime[] localDateTimes = DateRangeParser.parseDateRange(startTime);
+		LocalDate[] localDateTimes = DateRangeParser.parseDateRange(startTime);
 		if (localDateTimes.length > 0) {
-			start.setStartDate(localDateTimes[0].toLocalDate());
-			start.setEndDate(localDateTimes[1].toLocalDate());
+			start.setStartDate(localDateTimes[0]);
+			start.setEndDate(localDateTimes[1]);
 		}
 
 		localDateTimes = DateRangeParser.parseDateRange(endTime);
 		if (localDateTimes.length > 0) {
-			end.setStartDate(localDateTimes[0].toLocalDate());
-			end.setEndDate(localDateTimes[1].toLocalDate());
+			end.setStartDate(localDateTimes[0]);
+			end.setEndDate(localDateTimes[1]);
 		}
 
 		localDateTimes = DateRangeParser.parseDateRange(createTime);
 		if (localDateTimes.length > 0) {
-			create.setStartDate(localDateTimes[0].toLocalDate());
-			create.setEndDate(localDateTimes[1].toLocalDate());
+			create.setStartDate(localDateTimes[0]);
+			create.setEndDate(localDateTimes[1]);
 		}
 		if (localDateTimes.length > 0) {
-			update.setStartDate(localDateTimes[0].toLocalDate());
-			update.setEndDate(localDateTimes[1].toLocalDate());
+			update.setStartDate(localDateTimes[0]);
+			update.setEndDate(localDateTimes[1]);
 		}
 
 		if (start.getStartDate() != null && start.getEndDate() != null) {
