@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.task.backend.annotation.Permission;
 import org.task.backend.config.LoginThreadLocal;
+import org.task.backend.model.dto.ChangePasswordDto;
 import org.task.backend.model.dto.LoginDto;
 import org.task.backend.model.dto.RegisterDto;
 import org.task.backend.model.dto.UserSelectDto;
@@ -141,6 +142,24 @@ public class UserController {
 		}
 		boolean saved = userService.saveOrUpdate(user);
 		return saved? Result.success("success") : Result.saveFailed();
+	}
+
+
+	@PostMapping("/changePassword")
+	public Result changePassword(@RequestBody @Validated ChangePasswordDto changePasswordDto) {
+		Integer userId = LoginThreadLocal.getUserId();
+		User user = userService.getById(userId);
+		LoginDto loginDto = new LoginDto();
+		loginDto.setUsername(user.getUsername());
+		loginDto.setPassword(changePasswordDto.getOldPassword());
+		String newToken = userService.login(loginDto);
+		if (newToken == null) {
+			return Result.error("旧密码错误");
+		}
+
+		user.setPassword(changePasswordDto.getNewPassword());
+		boolean changed = userService.updateById(user);
+		return changed? Result.success("success") : Result.error("用户名或密码错误");
 	}
 
 }
