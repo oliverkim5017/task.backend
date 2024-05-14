@@ -21,6 +21,7 @@ import org.task.backend.service.RoleService;
 import org.task.backend.service.TeamService;
 import org.task.backend.service.UserService;
 import org.task.backend.util.JwtUtil;
+import org.task.backend.util.SHA256Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +158,8 @@ public class UserController {
 			return Result.error("旧密码错误");
 		}
 
-		user.setPassword(changePasswordDto.getNewPassword());
+		String hashPassword = SHA256Util.hashPassword(changePasswordDto.getNewPassword());
+		user.setPassword(hashPassword);
 		boolean changed = userService.updateById(user);
 		return changed? Result.success("success") : Result.error("用户名或密码错误");
 	}

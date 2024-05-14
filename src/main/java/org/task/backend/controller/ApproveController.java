@@ -74,7 +74,8 @@ public class ApproveController {
 	@PostMapping("/approveReply")
 	public Result approveReply(@RequestBody ReplyDto replyDto) {
 		Approve approve = approveService.getOne(new QueryWrapper<Approve>().lambda()
-				.eq(Approve::getTaskId, replyDto.getTaskId()));
+				.eq(Approve::getTaskId, replyDto.getTaskId())
+				.isNull(Approve::getReply));
 		if (approve == null) {
 			return Result.error("审批不存在");
 		}
@@ -92,7 +93,6 @@ public class ApproveController {
 		}
 		boolean b1 = taskService.updateById(task);
 		return b1 ? Result.success() : Result.saveFailed();
-
 	}
 
 
