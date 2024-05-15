@@ -95,5 +95,14 @@ public class ApproveController {
 		return b1 ? Result.success() : Result.saveFailed();
 	}
 
+	@GetMapping("/getApproveDetails")
+	public Result getApproveDetails() {
+		Integer userId = LoginThreadLocal.getUserId();
+		if (userId == null) {
+			return Result.error("用户未登录");
+		}
+		List<Approve> list = approveService.getApproveDetails(userId);
+		return Result.success(list);
+	}
 
 }

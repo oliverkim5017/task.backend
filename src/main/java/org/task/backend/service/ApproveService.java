@@ -14,4 +14,6 @@ public interface ApproveService extends IService<Approve> {
 
 	List<Approve> getToApprove(Integer userId);
 
+	List<Approve> getApproveDetails(Integer userId);
+
 }

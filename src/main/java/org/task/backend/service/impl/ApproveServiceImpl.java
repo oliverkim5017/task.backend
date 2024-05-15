@@ -26,6 +26,11 @@ public class ApproveServiceImpl extends ServiceImpl<ApproveMapper, Approve>
 	public List<Approve> getToApprove(Integer userId) {
 		return approveMapper.approveMapper(userId);
 	}
+
+	@Override
+	public List<Approve> getApproveDetails(Integer userId) {
+		return approveMapper.getApproveDetails(userId);
+	}
 }
 
 

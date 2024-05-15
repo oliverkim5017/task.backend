@@ -16,6 +16,8 @@ public interface ApproveMapper extends BaseMapper<Approve> {
 
 	List<Approve> approveMapper(Integer userId);
 
+	List<Approve> getApproveDetails(Integer userId);
+
 }
 
 
