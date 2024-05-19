@@ -113,6 +113,10 @@ public class UserController {
 			wrapper.lambda().eq(User::getDepartmentId, departmentId);
 		}
 		List<User> users = userService.list(wrapper);
+		if (users.size() == 0)
+		{
+			return Result.success();
+		}
 
 		List<Integer> departmentIds = users.stream().map(User::getDepartmentId).distinct().toList();
 		List<Integer> roleIds = users.stream().map(User::getRoleId).distinct().toList();
